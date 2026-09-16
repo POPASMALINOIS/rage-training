@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-rage-version="2.4.58">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
@@ -8,10 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Rage Training">
-  <link rel="manifest" href="manifest.json?v=2.4.57">
-  <link rel="apple-touch-icon" href="rage-logo.png?v=2.4.57">
-  <link rel="icon" href="rage-logo.png?v=2.4.57" type="image/png">
-
+  <link rel="manifest" href="manifest.json?v=2.4.58">
+  <link rel="apple-touch-icon" href="rage-logo.png?v=2.4.58">
+  <link rel="icon" href="rage-logo.png?v=2.4.58" type="image/png">
   <link rel="stylesheet" href="styles.css?v=2.3.0">
   <link rel="stylesheet" href="modern-v2.4.css?v=2.4.1">
   <link rel="stylesheet" href="responsive-v2.4.2.css?v=2.4.5">
@@ -34,68 +33,50 @@
   <link rel="stylesheet" href="calendar-zoom-v2.4.44.css?v=2.4.44">
   <link rel="stylesheet" href="parejas-v2.4.53.css?v=2.4.57">
   <link rel="stylesheet" href="tarifas-v2.4.55.css?v=2.4.57">
-
   <style>
-    /* Salida de emergencia independiente del JavaScript y de la caché anterior. */
     #rage-splash{animation:rageInlineSplashExit 6.4s linear forwards!important}
     #rage-splash.is-hidden{animation:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
     @keyframes rageInlineSplashExit{0%,88%{opacity:1;visibility:visible;pointer-events:auto}96%,100%{opacity:0;visibility:hidden;pointer-events:none}}
   </style>
-
   <script>
     (function(){
+      function stop(e){e.preventDefault();e.stopImmediatePropagation()}
+      // No legacy startup callback may run when the protection could not be downloaded.
+      document.addEventListener('DOMContentLoaded',function(e){
+        if(window.RageLocalData && window.RageLocalData.status().loaded)return;
+        stop(e);
+        if(document.getElementById('rage-storage-guard'))return;
+        var error=document.createElement('div');
+        error.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#07101d;color:white;padding:40px;font:18px/1.6 Arial';
+        error.textContent='No se ha podido iniciar la protección de datos. Conecta la tablet a Internet y vuelve a abrir Rage Training. No se ha permitido vaciar ni sobrescribir los clientes.';
+        document.body.appendChild(error);
+      },true);
+      window.addEventListener('click',function(e){if(!window.RageLocalData)stop(e)},true);
       function syncDevice(){
         var touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
         var shortSide=Math.min(screen.width||9999,screen.height||9999);
         document.documentElement.classList.toggle('mobile-device',(touch&&shortSide<=900)||window.innerWidth<=900);
       }
-      function top(){
-        document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);
-        var main=document.querySelector('.main-panel');if(main)main.scrollTop=0;
-      }
+      function top(){document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);var main=document.querySelector('.main-panel');if(main)main.scrollTop=0}
       function forceReveal(){
-        var dashboard=document.getElementById('dashboard-screen');
-        if(dashboard)dashboard.classList.add('active');
-        var login=document.getElementById('login-screen');
-        if(login)login.classList.remove('active');
         var splash=document.getElementById('rage-splash');
-        if(splash){
-          splash.classList.add('is-hidden');
-          splash.style.opacity='0';
-          splash.style.visibility='hidden';
-          splash.style.pointerEvents='none';
-          setTimeout(function(){if(splash&&splash.parentNode)splash.parentNode.removeChild(splash)},350);
-        }
+        if(splash){splash.classList.add('is-hidden');splash.style.opacity='0';splash.style.visibility='hidden';splash.style.pointerEvents='none';setTimeout(function(){if(splash.parentNode)splash.parentNode.removeChild(splash)},350)}
       }
       window.__rageForceReveal=forceReveal;
       syncDevice();
       window.addEventListener('resize',syncDevice,{passive:true});
       window.addEventListener('orientationchange',function(){syncDevice();setTimeout(syncDevice,120);setTimeout(syncDevice,400)},{passive:true});
-      document.addEventListener('DOMContentLoaded',function(){
-        syncDevice();
-        document.querySelectorAll('.sidebar nav button').forEach(function(button){
-          button.addEventListener('click',function(){top();requestAnimationFrame(top);setTimeout(top,50)});
-        });
-      });
+      document.addEventListener('DOMContentLoaded',function(){syncDevice();document.querySelectorAll('.sidebar nav button').forEach(function(button){button.addEventListener('click',function(){top();requestAnimationFrame(top);setTimeout(top,50)})})});
       setTimeout(forceReveal,7000);
-      window.addEventListener('pageshow',function(){setTimeout(forceReveal,7000)},{once:true});
     })();
   </script>
 </head>
 <body>
 <div class="app-layout">
-  <div id="rage-splash" aria-label="Rage Training">
-    <div class="rage-splash-inner">
-      <img src="rage-logo.png?v=2.4.57" alt="Rage Training" class="rage-splash-logo">
-      <h1 class="rage-splash-title">RAGE TRAINING</h1>
-      <p class="rage-splash-subtitle">Gestión del centro</p>
-      <div class="rage-splash-loader" aria-label="Cargando"></div>
-    </div>
-  </div>
-
+  <div id="rage-splash" aria-label="Rage Training"><div class="rage-splash-inner"><img src="rage-logo.png?v=2.4.58" alt="Rage Training" class="rage-splash-logo"><h1 class="rage-splash-title">RAGE TRAINING</h1><p class="rage-splash-subtitle">Gestión del centro</p><div class="rage-splash-loader" aria-label="Cargando"></div></div></div>
   <section id="dashboard-screen" class="screen active">
     <aside class="sidebar">
-      <div class="brand-lockup"><img src="rage-logo.png?v=2.4.57" alt="Rage Training" class="sidebar-logo"><div><strong>RAGE</strong><span>TRAINING</span></div></div>
+      <div class="brand-lockup"><img src="rage-logo.png?v=2.4.58" alt="Rage Training" class="sidebar-logo"><div><strong>RAGE</strong><span>TRAINING</span></div></div>
       <div class="nav-caption">GESTIÓN</div>
       <nav>
         <button id="nav-resumen" class="nav-active" onclick="mostrarSeccion('resumen')"><span class="nav-icon">◫</span><span>Resumen</span></button>
@@ -108,15 +89,10 @@
         <button onclick="mostrarSeccion('recordatorios')"><span class="nav-icon">◔</span><span>Recordatorios</span></button>
         <button onclick="mostrarSeccion('ajustes')"><span class="nav-icon">⚙</span><span>Ajustes</span></button>
       </nav>
-      <div class="sidebar-footer"><span class="status-dot"></span><div><strong>Rage Training</strong><small>Panel operativo</small></div></div>
+      <div class="sidebar-footer"><span class="status-dot"></span><div><strong>Rage Training</strong><small>Datos locales · v2.4.58</small></div></div>
     </aside>
-
     <main class="main-panel">
-      <header class="top-header">
-        <div class="header-copy"><span class="eyebrow">PANEL</span><h1 id="tituloPanel">Resumen</h1><p id="subtituloPanel">KPIs, agenda y seguimiento general</p></div>
-        <div class="header-actions"></div>
-      </header>
-
+      <header class="top-header"><div class="header-copy"><span class="eyebrow">PANEL</span><h1 id="tituloPanel">Resumen</h1><p id="subtituloPanel">KPIs, agenda y seguimiento general</p></div><div class="header-actions"></div></header>
       <section id="resumen-section">
         <section class="resumen-grid">
           <div class="resumen-card"><span class="kpi-label">CLIENTES</span><strong id="totalClientes">0</strong><small>Total registrados</small></div>
@@ -124,29 +100,22 @@
           <div class="resumen-card clickable-card" onclick="mostrarSeccion('clientes-bonos')"><span class="kpi-label">BONOS</span><strong id="bonosBajos">0</strong><small>Bajos o agotados</small></div>
           <div class="resumen-card clickable-card" onclick="mostrarSesionesHoy()"><span class="kpi-label">HOY</span><strong id="clasesHoy">0</strong><small>Sesiones programadas</small></div>
         </section>
-        <section class="calendario-panel">
-          <div class="calendario-top"><div><span class="section-kicker">AGENDA SEMANAL</span><h2 id="tituloMes">Calendario</h2><span>Planificación por horas y entrenador</span></div><div class="calendar-actions"><button onclick="cambiarMes(-1)">‹</button><button onclick="irMesActual()">Hoy</button><button onclick="cambiarMes(1)">›</button></div></div>
-          <div id="calendarioMensual" class="calendar-grid"></div>
-        </section>
+        <section class="calendario-panel"><div class="calendario-top"><div><span class="section-kicker">AGENDA SEMANAL</span><h2 id="tituloMes">Calendario</h2><span>Planificación por horas y entrenador</span></div><div class="calendar-actions"><button onclick="cambiarMes(-1)">‹</button><button onclick="irMesActual()">Hoy</button><button onclick="cambiarMes(1)">›</button></div></div><div id="calendarioMensual" class="calendar-grid"></div></section>
       </section>
-
       <section id="clientes-section" style="display:none">
         <div class="section-heading"><div><span class="section-kicker">BASE DE CLIENTES</span><h2>Clientes</h2><p>Consulta, filtra y gestiona las fichas activas.</p></div></div>
         <section class="toolbar"><div class="search-wrap"><span>⌕</span><input type="text" id="buscadorClientes" placeholder="Buscar cliente..." oninput="renderClientes()"></div><button class="add-btn" onclick="cambiarPantalla('alta-screen')">+ Nuevo cliente</button></section>
         <section class="tabla-clientes data-surface"><div class="tabla-header"><span>Cliente</span><span>Teléfono</span><span>Bono</span><span>Estado</span><span>Acciones</span></div><div id="clientesLista"></div></section>
       </section>
-
       <section id="clientes-bonos-section" style="display:none">
         <div class="section-heading"><div><span class="section-kicker">SEGUIMIENTO</span><h2>Bonos críticos</h2><p>Clientes que requieren renovación o revisión.</p></div></div>
         <section class="tabla-clientes data-surface"><div class="tabla-header"><span>Cliente</span><span>Teléfono</span><span>Bono</span><span>Estado</span><span>Acciones</span></div><div id="clientesBonosLista"></div></section>
       </section>
-
       <section id="entrenadores-section" style="display:none">
         <div class="section-heading"><div><span class="section-kicker">EQUIPO</span><h2>Entrenadores</h2><p>Colores de agenda, estado y sesiones asignadas.</p></div></div>
         <section class="toolbar trainers-toolbar"><div class="field-inline"><input type="text" id="entrenadorNombre" placeholder="Nombre del entrenador"></div><label class="color-control"><input type="color" id="entrenadorColor" value="#F15A24"><span>Color</span></label><button class="add-btn" onclick="agregarEntrenador()">+ Añadir</button></section>
         <section class="tabla-clientes data-surface"><div class="tabla-header entrenadores-header"><span>Entrenador</span><span>Color</span><span>Estado</span><span>Sesiones</span><span>Acciones</span></div><div id="entrenadoresLista"></div></section>
       </section>
-
       <section id="pagos-section" style="display:none">
         <div class="section-heading"><div><span class="section-kicker">FINANZAS</span><h2>Pagos</h2><p>Estado de cobros, importes e historial por cliente.</p></div></div>
         <section class="toolbar"><div class="search-wrap"><span>⌕</span><input type="text" id="buscadorPagos" placeholder="Buscar cliente..." oninput="renderPagos()"></div></section>
@@ -154,15 +123,11 @@
       </section>
     </main>
   </section>
-
   <section id="alta-screen" class="screen secondary-screen">
     <header class="dashboard-header"><div><span class="section-kicker">CLIENTES</span><h1>Nuevo cliente</h1></div><button onclick="volverDashboard()">Volver</button></header>
-    <div class="card alta-card form-surface">
-      <div class="form-heading"><h2>Datos personales</h2><p>Información básica y configuración inicial del bono.</p></div>
+    <div class="card alta-card form-surface"><div class="form-heading"><h2>Datos personales</h2><p>Información básica y configuración inicial del bono.</p></div>
       <div class="form-grid">
-        <input type="text" id="clienteNombre" placeholder="Nombre del cliente">
-        <input type="text" id="clienteTelefono" placeholder="Teléfono">
-        <input type="email" id="clienteEmail" placeholder="Email">
+        <input type="text" id="clienteNombre" placeholder="Nombre del cliente"><input type="text" id="clienteTelefono" placeholder="Teléfono"><input type="email" id="clienteEmail" placeholder="Email">
         <div class="labeled-field"><label for="clienteFechaAlta">Fecha de alta</label><input type="date" id="clienteFechaAlta"></div>
         <input type="number" id="clienteCuota" placeholder="Precio del bono (€)">
         <select id="clienteBonoTotal"><option value="5">Bono 5 sesiones</option><option value="10">Bono 10 sesiones</option></select>
@@ -170,25 +135,18 @@
         <select id="clienteBonoModalidad"><option value="Individual">Individual</option><option value="Pareja">Pareja</option><option value="Trío">Trío</option></select>
         <select id="clienteEstado"><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option></select>
       </div>
-      <textarea id="clienteObservaciones" placeholder="Observaciones"></textarea>
-      <button onclick="agregarCliente()">Guardar cliente</button>
+      <textarea id="clienteObservaciones" placeholder="Observaciones"></textarea><button onclick="agregarCliente()">Guardar cliente</button>
     </div>
   </section>
-
   <section id="dia-screen" class="screen secondary-screen">
     <header class="dashboard-header"><div><span class="section-kicker">AGENDA</span><h1 id="tituloDia">Agenda del día</h1><p id="subtituloDia"></p></div><button onclick="volverDashboard()">Volver</button></header>
     <div class="agenda-layout"><div class="card session-form"><span class="section-kicker">NUEVA SESIÓN</span><h2>Añadir sesión</h2><select id="diaClienteSelect"></select><input type="time" id="diaClaseHora"><button onclick="agendarClaseDia()">Guardar sesión</button></div><div class="agenda-panel"><div class="panel-heading"><span class="section-kicker">PROGRAMACIÓN</span><h2>Sesiones del día</h2></div><div id="agendaDiaLista"></div></div></div>
   </section>
-
-  <section id="ficha-screen" class="screen secondary-screen">
-    <header class="dashboard-header"><div><span class="section-kicker">CLIENTE</span><h1>Ficha completa</h1></div><button onclick="volverDashboard()">Volver</button></header>
-    <div class="cliente-ficha" id="clienteFicha"></div>
-  </section>
+  <section id="ficha-screen" class="screen secondary-screen"><header class="dashboard-header"><div><span class="section-kicker">CLIENTE</span><h1>Ficha completa</h1></div><button onclick="volverDashboard()">Volver</button></header><div class="cliente-ficha" id="clienteFicha"></div></section>
 </div>
-
-<!-- La lógica del splash se registra antes que el resto de módulos. -->
-<script src="splash-v2.4.25.js?v=2.4.57"></script>
+<!-- Read validated data synchronously BEFORE any splash or module can save. -->
 <script src="app.js?v=2.4.4"></script>
+<script src="persistencia-v2.4.58.js?v=2.4.58"></script>
 <script src="ajustes-v2.4.7.js?v=2.4.8"></script>
 <script src="clientes-seguimiento-v2.4.9.js?v=2.4.9"></script>
 <script src="cliente-detalle-v2.4.10.js?v=2.4.10"></script>
@@ -208,14 +166,7 @@
 <script src="calendar-zoom-v2.4.44.js?v=2.4.44"></script>
 <script src="parejas-v2.4.53.js?v=2.4.57"></script>
 <script src="recurrencias-loader-v2.4.47.js?v=2.4.57"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('service-worker.js?v=2.4.57').catch(function (error) {
-        console.warn('[Rage] No se pudo registrar el service worker:', error);
-      });
-    });
-  }
-</script>
+<script src="splash-v2.4.25.js?v=2.4.58"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('service-worker.js?v=2.4.58').catch(function(e){console.warn('[Rage] Service worker:',e)})})}</script>
 </body>
 </html>
