@@ -1,45 +1,30 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07101d">
-  <title>Actualizando Rage Training</title>
-  <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:24px;background:#07101d;color:#f8fafc;font-family:Arial,Helvetica,sans-serif;text-align:center}.box{width:min(440px,100%);padding:30px 22px;border:1px solid rgba(148,163,184,.18);border-radius:18px;background:#0d192a;box-shadow:0 24px 70px rgba(0,0,0,.38)}img{width:150px;max-width:55vw;height:auto;margin-bottom:18px}h1{margin:0 0 9px;font-size:23px}p{margin:0;color:#9aabc0;font-size:15px;line-height:1.5}.loader{width:42px;height:42px;margin:22px auto 0;border:4px solid rgba(148,163,184,.2);border-top-color:#F15A24;border-radius:50%;animation:spin .8s linear infinite}a{display:none;margin-top:20px;color:#fff;background:#F15A24;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:800}@keyframes spin{to{transform:rotate(360deg)}}
-  </style>
-</head>
-<body>
-  <main class="box">
-    <img src="rage-logo.png?v=2.4.57" alt="Rage Training">
-    <h1>Actualizando la aplicación</h1>
-    <p id="estado">Eliminando únicamente la caché antigua. Tus clientes y demás datos locales no se borrarán.</p>
-    <div class="loader" aria-hidden="true"></div>
-    <a id="continuar" href="./?v=24571">Abrir Rage Training</a>
-  </main>
-  <script>
-    (async function(){
-      const estado=document.getElementById('estado');
-      const continuar=document.getElementById('continuar');
-      try{
-        if('serviceWorker' in navigator){
-          const registros=await navigator.serviceWorker.getRegistrations();
-          await Promise.all(registros.map(registro=>registro.unregister()));
-        }
-        if('caches' in window){
-          const claves=await caches.keys();
-          await Promise.all(claves.map(clave=>caches.delete(clave)));
-        }
-        estado.textContent='Actualización completada. Abriendo Rage Training…';
-        setTimeout(()=>location.replace('./?v=24571&fresh='+Date.now()),700);
-      }catch(error){
-        console.error(error);
-        estado.textContent='No se ha podido completar automáticamente. Pulsa el botón para continuar.';
-        continuar.style.display='inline-block';
-        document.querySelector('.loader').style.display='none';
-      }
-      setTimeout(()=>{continuar.style.display='inline-block'},5000);
-    })();
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07101d"><title>Actualizar Rage Training</title>
+<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#07101d;color:#fff;font:16px/1.5 Arial,sans-serif;text-align:center}main{width:min(460px,100%);padding:28px;border:1px solid #33465e;border-radius:18px;background:#0d192a}img{max-width:160px}h1{font-size:24px}p{color:#b9c5d6}button{padding:14px;background:#f15a24;border:0;border-radius:9px;color:white;font:inherit;font-weight:bold;cursor:pointer}</style></head>
+<body><main><img src="rage-logo.png" alt="Rage Training"><h1>Actualizar Rage Training</h1><p id="estado">Cierra primero las otras pestañas y la aplicación de Rage. Esta actualización solo renueva archivos de la app: no borra clientes, bonos, sesiones ni copias locales.</p><button id="actualizar" type="button">Actualizar y abrir v2.4.58</button></main>
+<script>
+const button=document.getElementById('actualizar');
+button.onclick=async function(){
+  button.disabled=true;
+  const text=document.getElementById('estado');
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),10000);
+  try{
+    text.textContent='Comprobando la conexión y la actualización…';
+    const response=await fetch('persistencia-v2.4.58.js?check='+Date.now(),{cache:'no-store',signal:controller.signal});
+    if(!response.ok || !(await response.text()).includes('rageTraining:database:v1'))throw new Error('La actualización todavía no está disponible o no hay conexión.');
+    const scope=new URL('./',location.href).href;
+    if('serviceWorker' in navigator){
+      const registrations=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.filter(r=>r.scope===scope).map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith('rage-training-v')).map(k=>caches.delete(k)));
+    }
+    text.textContent='Actualización preparada. Abriendo Rage…';
+    location.replace('./?v=24581&fresh='+Date.now());
+  }catch(e){text.textContent='No se han borrado datos. '+e.message+' Vuelve a intentarlo con conexión.';button.disabled=false}
+  finally{clearTimeout(timer)}
+};
+</script></body></html>
